@@ -43,6 +43,7 @@ const Confirmation = ({ handleClick }) => {
         const checkNewRecord = () => {
             if (data.length === 0) return; // Avoid checking if no records exist
             const hasNewRecord = data.some((f) => {
+                console.log("f-time: " + f.time)
                 return context.stopTime < f.time
             }) // Compare with existing records
             setNewRecord(hasNewRecord);
@@ -73,14 +74,15 @@ const Confirmation = ({ handleClick }) => {
 
     return (
         <>
-            <div className="btn--endGame">
-                {
-                    newRecord &&
-                    <Button sx={{ fontWeight: 'bold' }} onClick={() => saveRecord()}>
-                        Save New Record
-                    </Button>
-                }
+            {newRecord && <div className="btn--endGame">
+
+
+                <Button sx={{ fontWeight: 'bold' }} onClick={() => saveRecord()}>
+                    Save New Record
+                </Button>
+
             </div>
+            }
             <div className="btn--endGame">
                 <Button sx={{ fontWeight: 'bold' }} onClick={context.resetGame}>
                     Play again
