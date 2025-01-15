@@ -18,7 +18,10 @@ body {
     background: var(--dark-primary);
     color: var(--light-primary);
     text-align: center;
-    min-height: 100vh;
+    min-height: 80vh;
+    width: 80vw;
+    margin: 2rem auto;
+    border-radius: 1rem;
 }
 
 main {
@@ -38,6 +41,7 @@ main {
     background-color: var(--light-secondary);
     color: var(--dark-primary);
     border-radius: .5em;
+    margin: 2rem;
 }
 
 .wrapper--accent {
@@ -60,7 +64,7 @@ h1 {
 }
 
 .p--large {
-    font-size: 1.5rem;
+    font-size: 1.5rem;    
 }
 
 .p--regular {
@@ -70,6 +74,20 @@ h1 {
 /*===========================
 Buttons
 ============================*/
+
+.btn--endGame{
+    display: flex;
+    gap: 1em;
+    justify-content: space-between;
+    padding: 1em;
+    margin-top: 2rem;
+    background-color: #fde68a;
+    border: 2px solid black;
+    border-radius: 0.5rem;
+    width: fit-content;    
+}
+
+
 .btn {
     background-color: var(--light-primary);
     color: var(--dark-primary);

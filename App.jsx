@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, createContext } from 'react'
 import Form from '/components/Form'
 import MemoryCard from '/components/MemoryCard'
 import AssistiveTechInfo from '/components/AssistiveTechInfo'
 import GameOver from '/components/GameOver'
 import ErrorCard from '/components/ErrorCard'
 import Timer from './components/Timer'
+import Confirmation from './components/Confirmation'
+import MyContext from './MyContext'
 
 export default function App() {
     const initialFormData = { category: "animals-and-nature", number: 10 }
-
     const [isFirstRender, setIsFirstRender] = useState(true)
     const [formData, setFormData] = useState(initialFormData)
     const [isGameOn, setIsGameOn] = useState(false)
@@ -17,7 +18,11 @@ export default function App() {
     const [matchedCards, setMatchedCards] = useState([])
     const [areAllCardsMatched, setAreAllCardsMatched] = useState(false)
     const [isError, setIsError] = useState(false)
-    const [isRunnign, setIsRunning] = useState(false)
+    const [isRunning, setIsRunning] = useState(false)
+    const [stopTime, setStopTime] = useState(0)
+    const [showDialog, setShowDialog] = useState(false);
+    
+    const level = formData.number
 
     useEffect(() => {
         if (selectedCards.length === 2 && selectedCards[0].name === selectedCards[1].name) {
@@ -35,10 +40,10 @@ export default function App() {
         setFormData(prevFormData => ({ ...prevFormData, [e.target.name]: e.target.value }))
     }
 
-
     async function stopTimer(e) {
         setaAtivateTimer(false)
     }
+
 
     async function startGame(e) {
         e.preventDefault()
@@ -112,7 +117,11 @@ export default function App() {
     }
 
     const handleStart = () => setIsRunning(true);
-    const handleStop = () => setIsRunning(false);
+    const handleStop = (time) => {        
+        console.log("stopTime : " + time)
+        setStopTime(time)
+        setShowDialog(true)
+    };
 
     function resetGame() {
         setIsGameOn(false)
@@ -126,8 +135,29 @@ export default function App() {
         setIsError(false)
     }
 
+
+    const value = {
+        stopTime,
+        isRunning,
+        level,
+        handleStart,
+        handleStop,
+        resetGame,
+        resetError,
+        turnCard,
+        areAllCardsMatched,
+        formData,
+        isGameOn,
+        setEmojisData,
+        selectedCards,
+        matchedCards,
+        showDialog,
+        setShowDialog,
+    }
+
     return (
-        <main>
+
+        <MyContext.Provider value = {value}>
             <h1>Memory</h1>
             {!isGameOn && !isError &&
                 <Form
@@ -140,13 +170,13 @@ export default function App() {
                 <AssistiveTechInfo emojisData={emojisData} matchedCards={matchedCards} />}
             {areAllCardsMatched &&
                 <>
-                    <GameOver handleClick={resetGame}
+                    <GameOver handleClick={resetGame} time={stopTime} level={parseInt(formData.number)}
                     />
-                    
+
                 </>}
             {isGameOn &&
                 <>
-                    <Timer isRunning={isGameOn && !areAllCardsMatched} />
+                    <Timer isRunning={isGameOn && !areAllCardsMatched} stopTime = {handleStop}/>
                     <MemoryCard
                         handleClick={turnCard}
                         data={emojisData}
@@ -155,12 +185,15 @@ export default function App() {
                     />
                 </>
             }
+
+            {showDialog && <Confirmation time={stopTime} />}
+            
+
             {isError &&
                 <>
                     <ErrorCard handleClick={resetError} />
-                    <Timer active={false} />
                 </>
             }
-        </main>
+        </MyContext.Provider>
     )
 }
