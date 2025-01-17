@@ -12,7 +12,7 @@ const Confirmation = ({ handleClick }) => {
     const context = useContext(MyContext)
 
     const [name, setName] = useState("");
-    const [record, setRecord] = useState({ time: context.stopTime, level: context.level, timestamp: new Date().toISOString() });
+    const [record, setRecord] = useState({ time: context.stopTime, level: parseInt(context.level), timestamp: new Date().toISOString() });
     const [data, setData] = useState([]);
     const [newRecord, setNewRecord] = useState(false);
 
@@ -42,17 +42,15 @@ const Confirmation = ({ handleClick }) => {
     useEffect(() => {
         const checkNewRecord = () => {
             if (data.length === 0) return; // Avoid checking if no records exist
-            const hasNewRecord = data.some((f) => {
-                console.log("f-time: " + f.time)                
+            return data.some((f) => {
+                console.log(`stopTime ${context.stopTime} - stored time ${f.time}`)                
                 return context.stopTime < f.time
-            }) // Compare with existing records            
-            hasNewRecord ? setNewRecord(true) : false;
+            })             
         };
-        
-        
-
-        checkNewRecord();
-    }, [data, context.stopTime]);
+                
+        const hasNewRecord = checkNewRecord();
+        hasNewRecord ? setNewRecord(true) : setNewRecord(false);
+    }, [context.stopTime]);
 
 
     const saveRecord = async () => {
@@ -64,8 +62,9 @@ const Confirmation = ({ handleClick }) => {
                 ...record,
                 //timestamp: new Date().toISOString(),
             });
-            alert("Record saved successfully!");
-            setNewRecord(false); // Close dialog after saving
+            
+            alert("Record saved successfully!");            
+            setNewRecord(false);
 
         } catch (error) {
             console.error("Error saving record: ", error);
@@ -76,20 +75,17 @@ const Confirmation = ({ handleClick }) => {
 
     return (
         <>
-            {newRecord && <div className="btn--endGame">
-
-
-                <Button sx={{ fontWeight: 'bold' }} onClick={() => saveRecord()}>
+            {newRecord && 
+                <Button sx={{ fontWeight: 'bold', marginTop:'2rem' }} onClick={() => saveRecord()}>
                     Save New Record
                 </Button>
 
-            </div>
+            
             }
-            {!context.isRunning && <div className="btn--endGame">
-                <Button sx={{ fontWeight: 'bold' }} onClick={context.resetGame}>
+            {context.isGameOn && 
+                <Button sx={{ fontWeight: 'bold', marginTop:'2rem' }} onClick={context.resetGame}>
                     Play again
-                </Button>
-            </div>
+                </Button>            
 }
         </>
     );

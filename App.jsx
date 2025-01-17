@@ -139,6 +139,7 @@ export default function App() {
     const value = {
         stopTime,
         isRunning,
+        isFirstRender,
         level,
         handleStart,
         handleStop,
@@ -155,6 +156,7 @@ export default function App() {
         setShowDialog,
     }
 
+    console.log("context: ", value)
     return (
 
         <MyContext.Provider value = {value}>
